@@ -1,0 +1,44 @@
+{
+  "name": "guidecursor-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Non-blocking product walkthroughs with an animated guide cursor.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "packages/react",
+    "apps/demo"
+  ],
+  "scripts": {
+    "build": "npm run build -w @guidecursor/core && npm run build -w @guidecursor/react",
+    "build:demo": "npm run build -w @guidecursor/demo",
+    "test": "npm run test -w @guidecursor/core && npm run test -w @guidecursor/react",
+    "test:e2e": "npm run test:e2e -w @guidecursor/demo",
+    "typecheck": "npm run typecheck -w @guidecursor/core && npm run typecheck -w @guidecursor/react && npm run typecheck -w @guidecursor/demo",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "size": "node scripts/size.mjs",
+    "ci": "npm run lint && npm run build && npm run typecheck && npm run test && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.15",
+    "@playwright/test": "1.61.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.20.7",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tsup": "^8.5.0",
+    "typescript": "~5.9.2",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,135 @@
+:root {
+  --gc-accent: #7c3aed;
+  color-scheme: light;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #18181b;
+  background: #fafafa;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e4e4e7;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+.brand {
+  font-size: 18px;
+}
+nav {
+  display: flex;
+  gap: 12px;
+}
+nav a {
+  color: #52525b;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+nav a[aria-current="page"] {
+  background: #f4f4f5;
+  color: #18181b;
+}
+.status {
+  margin-left: auto;
+  font-size: 13px;
+  color: #71717a;
+}
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.row h1 {
+  margin-right: auto;
+}
+input {
+  font: inherit;
+  padding: 8px 12px;
+  border: 1px solid #d4d4d8;
+  border-radius: 10px;
+}
+button {
+  font: inherit;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #d4d4d8;
+  background: #fff;
+  cursor: pointer;
+}
+button.primary {
+  background: #7c3aed;
+  color: #fff;
+  border-color: #7c3aed;
+}
+button.ghost {
+  border-color: transparent;
+  color: #52525b;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.cards article,
+.panel {
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
+  padding: 20px;
+}
+.cards span {
+  display: block;
+  color: #71717a;
+  font-size: 13px;
+}
+.cards b {
+  font-size: 28px;
+}
+.panel {
+  margin: 24px 0;
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+}
+.panel h2 {
+  margin: 0;
+  font-size: 18px;
+}
+label {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.list {
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
+  padding: 8px 24px;
+}
+.list li {
+  padding: 10px 0;
+}
+.spacer {
+  height: 1200px;
+}
+.loading {
+  color: #71717a;
+}
