@@ -34,15 +34,29 @@ export interface CreateGuideInternals {
   renderer?: (getOptions: () => RendererOptions, cb: RendererCallbacks) => Renderer;
 }
 
-function normalizePath(path: string): string {
-  const clean = path.split(/[?#]/)[0] ?? "";
-  return clean.length > 1 ? clean.replace(/\/+$/, "") : clean || "/";
+function splitRoute(route: string): { path: string; query: URLSearchParams } {
+  const [beforeHash = ""] = route.split("#");
+  const q = beforeHash.indexOf("?");
+  const rawPath = q < 0 ? beforeHash : beforeHash.slice(0, q);
+  const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath || "/";
+  return { path, query: new URLSearchParams(q < 0 ? "" : beforeHash.slice(q + 1)) };
 }
 
+/**
+ * Does the current route satisfy a step's route? Strings compare paths (trailing slashes and
+ * hash ignored); query params in the step's route must be present with the same value
+ * (`/account?tab=payout` matches `/account?tab=payout&x=1`, not `/account`).
+ */
 export function routeMatches(matcher: RouteMatcher, current: string): boolean {
   if (typeof matcher === "function") return matcher(current);
   if (matcher instanceof RegExp) return matcher.test(current);
-  return normalizePath(matcher) === normalizePath(current);
+  const want = splitRoute(matcher);
+  const have = splitRoute(current);
+  if (want.path !== have.path) return false;
+  for (const [key, value] of want.query) {
+    if (have.query.get(key) !== value) return false;
+  }
+  return true;
 }
 
 function isEditable(el: EventTarget | null): boolean {
@@ -169,7 +183,7 @@ export function createGuide(options: GuideOptions = {}, internals: CreateGuideIn
     } catch (error) {
       reportError({ type: "callback", error });
     }
-    return isBrowser() ? window.location.pathname : "/";
+    return isBrowser() ? window.location.pathname + window.location.search : "/";
   }
 
   function stepIndexOf(tour: GuideTour, step: number | string | undefined): number {

@@ -47,7 +47,7 @@ export const tours: GuideTour[] = [
   {
     id: "quick-tips",
     title: "Quick tips",
-    description: "Two tips for the dashboard. Learn by clicking.",
+    description: "A few dashboard tips. Learn by clicking.",
     steps: [
       {
         id: "search",
@@ -64,6 +64,13 @@ export const tours: GuideTour[] = [
         content: "Click the button — the tour advances when you do.",
         advanceOn: "click",
         focus: false,
+      },
+      {
+        id: "footnote",
+        target: "#footnote",
+        title: "Even off-screen targets",
+        content: "The guide scrolls targets into view before pointing at them.",
+        placement: "top",
       },
       {
         id: "thanks",

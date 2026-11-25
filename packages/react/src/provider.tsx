@@ -24,7 +24,7 @@ const GuideContext = createContext<Guide | null>(null);
 export interface GuideCursorProviderProps extends Omit<GuideOptions, "tours" | "init"> {
   tours: GuideTour[];
   /**
-   * The current route (e.g. `useLocation().pathname`). When it changes, `autoStart`
+   * The current route (pathname, optionally with `?search`). When it changes, `autoStart`
    * conditions are re-evaluated. Also used as the default `getCurrentRoute`.
    */
   currentRoute?: string;
@@ -54,7 +54,7 @@ export function GuideCursorProvider(props: GuideCursorProviderProps): ReactNode 
           const p = latest.current;
           if (p.getCurrentRoute) return p.getCurrentRoute();
           if (p.currentRoute !== undefined) return p.currentRoute;
-          return typeof window !== "undefined" ? window.location.pathname : "/";
+          return typeof window !== "undefined" ? window.location.pathname + window.location.search : "/";
         },
         onStart: (e) => latest.current.onStart?.(e),
         onStep: (e) => latest.current.onStep?.(e),

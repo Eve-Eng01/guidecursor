@@ -194,7 +194,7 @@ export interface GuideOptions {
   storage?: StorageAdapter;
   /** Host router hook for steps that declare a `route`. May return a promise. */
   navigate?: (route: string) => void | Promise<void>;
-  /** Returns the current route. Default: `window.location.pathname`. */
+  /** Returns the current route. Default: `window.location.pathname + window.location.search`. */
   getCurrentRoute?: () => string;
   /** The animated cursor. `false` disables it entirely. */
   cursor?: boolean | CursorOptions;

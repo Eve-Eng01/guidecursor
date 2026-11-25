@@ -70,9 +70,14 @@ describe("cursor path", () => {
 describe("routeMatches", () => {
   it("compares paths, ignoring trailing slashes, query and hash", () => {
     expect(routeMatches("/settings", "/settings/")).toBe(true);
-    expect(routeMatches("/settings?tab=payouts", "/settings")).toBe(true);
+    expect(routeMatches("/settings", "/settings?tab=payouts#top")).toBe(true);
     expect(routeMatches("/", "/")).toBe(true);
     expect(routeMatches("/a", "/b")).toBe(false);
+  });
+  it("requires query params named in the step route", () => {
+    expect(routeMatches("/account?tab=payout", "/account?tab=payout&x=1")).toBe(true);
+    expect(routeMatches("/account?tab=payout", "/account")).toBe(false);
+    expect(routeMatches("/account?tab=payout", "/account?tab=profile")).toBe(false);
   });
   it("supports RegExp and functions", () => {
     expect(routeMatches(/^\/events\/\d+$/, "/events/12")).toBe(true);

@@ -84,7 +84,7 @@ export class GuideCursorEl {
   }
 
   show(): void {
-    this.el.dataset.state = this.moving ? "moving" : "idle";
+    if (this.el.dataset.state === "hidden") this.el.dataset.state = "idle";
     this.el.classList.add("gc-visible");
   }
 
@@ -119,8 +119,8 @@ export class GuideCursorEl {
       this.place(to0);
       return Promise.resolve();
     }
-    this.el.dataset.state = "moving";
     this.show();
+    this.el.dataset.state = "moving";
     return new Promise<void>((resolve) => {
       const start = now();
       const done = () => {
