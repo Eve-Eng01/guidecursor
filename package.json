@@ -4,6 +4,15 @@
   "version": "0.0.0",
   "description": "Non-blocking product walkthroughs with an animated guide cursor.",
   "license": "MIT",
+  "author": "Eve (https://github.com/Eve-Eng01)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eve-Eng01/guidecursor.git"
+  },
+  "homepage": "https://github.com/Eve-Eng01/guidecursor#readme",
+  "bugs": {
+    "url": "https://github.com/Eve-Eng01/guidecursor/issues"
+  },
   "type": "module",
   "workspaces": [
     "packages/core",

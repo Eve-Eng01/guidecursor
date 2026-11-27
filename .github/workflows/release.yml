@@ -1,0 +1,51 @@
+name: Release
+
+# Push a tag like v0.2.0 (matching the package versions) to publish both packages to npm with
+# provenance and create a GitHub release with the packed tarballs attached.
+# Needs the NPM_TOKEN repository secret (an npm automation token for the @guidecursor scope).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # create the GitHub release
+  id-token: write # npm provenance
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - name: Tag matches the package versions
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          for p in core react; do
+            v=$(node -p "require('./packages/$p/package.json').version")
+            [ "$v" = "$tag" ] || { echo "packages/$p is $v but the tag is v$tag"; exit 1; }
+          done
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Publish to npm
+        run: |
+          npm publish -w @guidecursor/core
+          npm publish -w @guidecursor/react
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: GitHub release
+        run: |
+          mkdir -p packs && npm pack -w @guidecursor/core -w @guidecursor/react --pack-destination packs
+          gh release create "$GITHUB_REF_NAME" packs/*.tgz --title "$GITHUB_REF_NAME" --generate-notes \
+            --notes "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for what changed."
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -6,6 +6,8 @@ const src = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 
 // The demo consumes the packages from source so it never runs against a stale build.
 export default defineConfig({
+  // DEMO_BASE=/guidecursor/ when building for GitHub Pages; "/" everywhere else.
+  base: process.env.DEMO_BASE ?? "/",
   plugins: [react()],
   resolve: {
     alias: {

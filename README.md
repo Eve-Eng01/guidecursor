@@ -1,5 +1,12 @@
 # guidecursor
 
+[![CI](https://github.com/Eve-Eng01/guidecursor/actions/workflows/ci.yml/badge.svg)](https://github.com/Eve-Eng01/guidecursor/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@guidecursor/core?label=%40guidecursor%2Fcore&color=7c3aed)](https://www.npmjs.com/package/@guidecursor/core)
+[![license: MIT](https://img.shields.io/badge/license-MIT-7c3aed)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-7c3aed)](CONTRIBUTING.md)
+
+**[Live demo](https://eve-eng01.github.io/guidecursor/)** · [Docs](docs/README.md) · [Examples](examples/README.md) · [Changelog](CHANGELOG.md)
+
 ![A guide cursor glides across a dashboard, an events page and a settings page, explaining each part in a popover while the page stays usable](docs/media/hero.gif)
 
 **Product walkthroughs that show, not block.** A small animated cursor glides from one part of your UI to the next, the way a colleague would show you around. A popover explains each stop. There's no dimmed full-screen overlay, so the page stays usable the whole time, and users can skip or come back later.
@@ -15,7 +22,7 @@
 - **Events for analytics.** `onStart`, `onStep`, `onSkip`, `onComplete`, `onDismiss`, `onEnd`, `onError`.
 - **Small and framework-agnostic.** `@guidecursor/core` is about 9.7 kB min+gzip including its CSS. It's SSR-safe, ships ESM, CJS and types, and has no dependencies. `@guidecursor/react` adds about 2.1 kB.
 
-MIT licensed.
+Free and open source under the MIT license.
 
 **Docs:** [Getting started](docs/getting-started.md) · [How a tour runs](docs/concepts.md) · [Guides and recipes](docs/README.md) · [Examples](examples/README.md) · [Troubleshooting](docs/troubleshooting.md) · [Contributing](CONTRIBUTING.md)
 
@@ -397,6 +404,13 @@ The API intentionally feels familiar. Steps have a `target` (driver.js: `element
 ## Development
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the architecture, the test setup, a worked example of adding a feature, and the release steps. In short: `npm install`, `npm run build`, `npm test`, `npm run test:e2e`, `npm run lint`, `npm run typecheck`. The demo runs with `npm run dev -w @guidecursor/demo`, and `npm run record:gifs` re-records the GIFs in these docs.
+
+## Community
+
+- Questions and ideas: [open an issue](https://github.com/Eve-Eng01/guidecursor/issues/new/choose)
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- Security: [SECURITY.md](SECURITY.md)
 
 ## License
 

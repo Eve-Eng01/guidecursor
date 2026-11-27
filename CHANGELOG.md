@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Ready for public use: npm package metadata (`repository`, `homepage`, `bugs`, `publishConfig` with provenance) and npm-friendly package READMEs.
+- The demo works under a base path, so it can be served from GitHub Pages (`DEMO_BASE=/guidecursor/ npm run build:demo`).
+
+### Added
+
+- Release workflow (tag `vX.Y.Z` → npm publish with provenance + GitHub release with tarballs), a GitHub Pages workflow for the demo, Dependabot, issue and pull request templates, `CODE_OF_CONDUCT.md` and `SECURITY.md`.
+
 ## [0.2.0] - 2026-11-27
 
 ### Added
@@ -41,3 +50,7 @@ All notable changes to this project are documented here. The format follows
   - `<GuideCursorProvider>`, `useGuideCursor()`, `useGuide()`.
   - `<GuideMenu />` on-demand "Guides" dropdown with completion state.
 - Demo app (Vite + React) with a three-page tour, Playwright e2e tests and vitest unit tests.
+
+[Unreleased]: https://github.com/Eve-Eng01/guidecursor/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Eve-Eng01/guidecursor/releases/tag/v0.2.0
+[0.1.0]: https://github.com/Eve-Eng01/guidecursor/commit/b76a751

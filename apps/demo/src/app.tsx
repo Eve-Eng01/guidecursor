@@ -18,7 +18,7 @@ function Link({ to, children }: { to: string; children: React.ReactNode }) {
   const path = usePathname();
   return (
     <a
-      href={to}
+      href={import.meta.env.BASE_URL.replace(/\/$/, "") + to}
       aria-current={path === to ? "page" : undefined}
       onClick={(e) => {
         e.preventDefault();

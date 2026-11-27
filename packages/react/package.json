@@ -3,6 +3,20 @@
   "version": "0.2.0",
   "description": "React bindings for guidecursor: provider, hook and an on-demand Guides menu.",
   "license": "MIT",
+  "author": "Eve (https://github.com/Eve-Eng01)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eve-Eng01/guidecursor.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/Eve-Eng01/guidecursor#readme",
+  "bugs": {
+    "url": "https://github.com/Eve-Eng01/guidecursor/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -46,5 +60,8 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

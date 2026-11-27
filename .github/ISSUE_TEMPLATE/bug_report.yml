@@ -1,0 +1,46 @@
+name: Bug report
+description: Something doesn't work the way the docs say it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report this. A minimal tour definition makes bugs much faster to fix.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The tour definition (and markup, if relevant), or a link to a CodeSandbox / StackBlitz / repo.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: events
+    attributes:
+      label: Errors and events
+      description: Anything from the browser console, and any `onError` events (for example `target-missing`).
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "@guidecursor/core 0.2.0, @guidecursor/react 0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Browser, framework and router
+      placeholder: "Chrome 131, React 19, TanStack Router 1.x"
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and the [troubleshooting guide](https://github.com/Eve-Eng01/guidecursor/blob/main/docs/troubleshooting.md).
+          required: true

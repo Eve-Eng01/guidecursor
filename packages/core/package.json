@@ -3,6 +3,20 @@
   "version": "0.2.0",
   "description": "Non-blocking, skippable product walkthroughs with an animated guide cursor. Framework-agnostic.",
   "license": "MIT",
+  "author": "Eve (https://github.com/Eve-Eng01)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eve-Eng01/guidecursor.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/Eve-Eng01/guidecursor#readme",
+  "bugs": {
+    "url": "https://github.com/Eve-Eng01/guidecursor/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -43,5 +57,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

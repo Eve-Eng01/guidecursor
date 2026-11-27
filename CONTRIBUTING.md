@@ -84,7 +84,7 @@ Statuses persist per tour: `new → in-progress → completed | skipped | dismis
 ## Setup
 
 ```bash
-git clone <this repo> && cd guidecursor
+git clone https://github.com/Eve-Eng01/guidecursor.git && cd guidecursor
 npm install
 npx playwright install chromium   # once, for the e2e tests and the GIF recorder
 ```
@@ -303,11 +303,13 @@ Use conventional prefixes: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chor
 
 1. Move the "Unreleased" changelog entries under a new version heading with today's date.
 2. Bump `version` in `packages/core/package.json` and `packages/react/package.json`. They stay in lockstep. Also bump react's dependency on core, and the demo's dependencies, to the same version.
-3. `npm install` to refresh the lockfile, then `npm run ci` and `npm run size`.
-4. `npm publish -w @guidecursor/core --access public && npm publish -w @guidecursor/react --access public`
-5. Tag the release: `git tag v0.2.0 && git push --tags`.
+3. `npm install` to refresh the lockfile, then `npm run ci` and `npm run size`. Commit as `chore: release vX.Y.Z`.
+4. Tag and push: `git tag vX.Y.Z && git push origin main --tags`. The **Release** workflow (`.github/workflows/release.yml`) checks that the tag matches the package versions, runs CI, publishes both packages to npm with [provenance](https://docs.npmjs.com/generating-provenance-statements), and creates a GitHub release with the packed tarballs attached. It needs an `NPM_TOKEN` repository secret: an npm automation token with publish rights on the `@guidecursor` scope.
+5. Publishing by hand instead? `npm run build`, then `npm publish -w @guidecursor/core --provenance=false && npm publish -w @guidecursor/react --provenance=false`. Provenance only works from CI.
 6. Apps that vendor tarballs (`file:vendor/guidecursor/*.tgz`) need the new tarballs packed and their lockfiles updated (see [Working on the demo](#working-on-the-demo-and-trying-changes-in-a-real-app)).
 
 ## Getting help
 
-Open an issue with your question and a minimal tour definition. For anything security-related, don't open a public issue: email the maintainers instead.
+Open an [issue](https://github.com/Eve-Eng01/guidecursor/issues/new/choose) with your question and a minimal tour definition. For anything security-related, don't open a public issue: follow [SECURITY.md](SECURITY.md).
+
+Everyone taking part is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
