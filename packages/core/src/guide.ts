@@ -340,7 +340,28 @@ export function createGuide(options: GuideOptions = {}, internals: CreateGuideIn
       if (my !== token) return;
     }
 
-    // 3. Target.
+    // 3. Does the step apply right now? A step that doesn't is passed over, not reported.
+    if (step.when) {
+      let applies = true;
+      try {
+        applies = await step.when(ctx);
+      } catch (error) {
+        reportError({ type: "callback", error, tour, step, index });
+      }
+      if (my !== token) return;
+      if (!applies) {
+        const nextIndex = index + direction;
+        if (nextIndex >= tour.steps.length) finish("completed");
+        else if (nextIndex < 0) {
+          // Nothing applies before this step: turn around and show the first one that does.
+          direction = 1;
+          await showStep(index + 1);
+        } else await showStep(nextIndex);
+        return;
+      }
+    }
+
+    // 4. Target.
     let target: Element | null = null;
     if (step.target) {
       target = await waitForElement(step.target, {
@@ -350,7 +371,7 @@ export function createGuide(options: GuideOptions = {}, internals: CreateGuideIn
       if (my !== token) return;
       if (!target) {
         reportError({ type: "target-missing", tour, step, index });
-        const mode = opts.onMissingTarget ?? "skip";
+        const mode = step.onMissingTarget ?? opts.onMissingTarget ?? "skip";
         if (mode === "end") {
           finish("error");
           return;
@@ -368,7 +389,7 @@ export function createGuide(options: GuideOptions = {}, internals: CreateGuideIn
       }
     }
 
-    // 4. Render (scroll, glide, popover).
+    // 5. Render (scroll, glide, popover).
     if (!isBrowser()) return;
     setState({ phase: "moving" });
     let content: string | Node | undefined;

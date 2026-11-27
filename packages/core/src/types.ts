@@ -12,6 +12,14 @@ export type Align = "start" | "center" | "end";
  */
 export type TargetInput = string | Element | (() => Element | null | undefined);
 
+/**
+ * What to do when a step's target never appears:
+ * - `skip`: go to the next step in the direction the user is moving
+ * - `end`: end the tour
+ * - `center`: show the step anyway, centered, with no anchor
+ */
+export type MissingTargetMode = "skip" | "end" | "center";
+
 /** Matches the current route against a step's route. */
 export type RouteMatcher = string | RegExp | ((currentRoute: string) => boolean);
 
@@ -55,6 +63,15 @@ export interface GuideStep {
   advanceOn?: "click" | { event: string; selector?: string };
   /** Override the guide's `targetTimeout` (ms) for this step. */
   timeout?: number;
+  /** Override the guide's `onMissingTarget` for this step. */
+  onMissingTarget?: MissingTargetMode;
+  /**
+   * Show this step only when it applies right now (a tab that only exists for some records, a
+   * feature behind a flag…). Runs after `route` navigation and `beforeShow`, so it can look at the
+   * page. Returning false moves on in the direction the user is going: Next skips forward, Back
+   * skips back. Unlike a missing target, a step that doesn't apply is not an error.
+   */
+  when?: (ctx: StepContext) => boolean | Promise<boolean>;
   /** Hide the Back button on this step. */
   hideBack?: boolean;
   /** Move keyboard focus into the popover when the step shows. Default: guide option. */
@@ -205,8 +222,8 @@ export interface GuideOptions {
   offset?: number;
   /** How long to wait for a step's target (ms). Default 5000. */
   targetTimeout?: number;
-  /** What to do when a target never appears. Default `"skip"` (go to the next step). */
-  onMissingTarget?: "skip" | "end" | "center";
+  /** What to do when a target never appears. Default `"skip"` (go to the next step). Steps can override it. */
+  onMissingTarget?: MissingTargetMode;
   /** `auto` follows `prefers-reduced-motion`. */
   motion?: "auto" | "reduce" | "full";
   /** Keyboard shortcuts (Esc skips, ←/→/Enter navigate). Default true. */

@@ -1,6 +1,6 @@
 {
   "name": "@guidecursor/react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React bindings for guidecursor: provider, hook and an on-demand Guides menu.",
   "license": "MIT",
   "type": "module",
@@ -41,7 +41,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@guidecursor/core": "0.1.0"
+    "@guidecursor/core": "0.2.0"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

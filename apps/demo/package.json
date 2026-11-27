@@ -11,7 +11,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@guidecursor/core": "0.1.0",
-    "@guidecursor/react": "0.1.0"
+    "@guidecursor/core": "0.2.0",
+    "@guidecursor/react": "0.2.0"
   }
 }

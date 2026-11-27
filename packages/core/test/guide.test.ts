@@ -401,6 +401,20 @@ describe("targets", () => {
     expect(popover()?.dataset.placement).toBe("center");
   });
 
+  it("a step can override onMissingTarget", async () => {
+    html('<button id="a">A</button><button id="c">C</button>');
+    const tour: GuideTour = {
+      ...threeSteps,
+      steps: threeSteps.steps.map((s) => (s.id === "b" ? { ...s, onMissingTarget: "center" as const } : s)),
+    };
+    guide = makeGuide({ tours: [tour], targetTimeout: 30 });
+    await guide.start("t");
+    await waitForPhase(guide, "showing");
+    await guide.next();
+    expect(popoverTitle()).toBe("Step B");
+    expect(popover()?.dataset.placement).toBe("center");
+  });
+
   it("accepts element getters and elements as targets", async () => {
     const el = document.getElementById("b")!;
     guide = makeGuide({
@@ -449,6 +463,88 @@ describe("targets", () => {
     document.body.insertAdjacentHTML("afterbegin", '<button id="a">A again</button>');
     await waitForPhase(guide, "showing");
     expect(popoverTitle()).toBe("Step A");
+  });
+});
+
+describe("conditional steps (when)", () => {
+  const withWhen = (applies: (id: string) => boolean): GuideTour => ({
+    ...threeSteps,
+    steps: threeSteps.steps.map((s) => ({ ...s, when: () => applies(s.id) })),
+  });
+
+  it("passes over a step that doesn't apply, without reporting an error", async () => {
+    const onError = vi.fn();
+    const onStep = vi.fn();
+    guide = makeGuide({ tours: [withWhen((id) => id !== "b")], onError, onStep });
+    await guide.start("t");
+    await waitForPhase(guide, "showing");
+    await guide.next();
+    expect(popoverTitle()).toBe("Step C");
+    expect(onError).not.toHaveBeenCalled();
+    expect(onStep.mock.calls.map((c) => c[0].index)).toEqual([0, 2]);
+  });
+
+  it("skips backwards when going back", async () => {
+    guide = makeGuide({ tours: [withWhen((id) => id !== "b")] });
+    await guide.start("t", { step: "c" });
+    await waitForPhase(guide, "showing");
+    await guide.back();
+    expect(popoverTitle()).toBe("Step A");
+  });
+
+  it("turns around when nothing before the step applies", async () => {
+    guide = makeGuide({ tours: [withWhen((id) => id !== "a")] });
+    await guide.start("t");
+    await waitForPhase(guide, "showing");
+    expect(popoverTitle()).toBe("Step B");
+    await guide.back();
+    expect(popoverTitle()).toBe("Step B");
+  });
+
+  it("completes the tour when no later step applies", async () => {
+    const onComplete = vi.fn();
+    guide = makeGuide({ tours: [withWhen((id) => id === "a")], onComplete });
+    await guide.start("t");
+    await waitForPhase(guide, "showing");
+    await guide.next();
+    expect(guide.getState().tourId).toBeNull();
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it("runs after beforeShow, supports async conditions, and shows the step if the condition throws", async () => {
+    const order: string[] = [];
+    const onError = vi.fn();
+    const tour: GuideTour = {
+      id: "w",
+      title: "When",
+      steps: [
+        {
+          target: "#a",
+          title: "Async",
+          beforeShow: () => void order.push("beforeShow"),
+          when: async () => {
+            order.push("when");
+            await new Promise((r) => setTimeout(r, 10));
+            return true;
+          },
+        },
+        {
+          target: "#b",
+          title: "Throws",
+          when: () => {
+            throw new Error("boom");
+          },
+        },
+      ],
+    };
+    guide = makeGuide({ tours: [tour], onError });
+    await guide.start("w");
+    await waitForPhase(guide, "showing");
+    expect(order).toEqual(["beforeShow", "when"]);
+    expect(popoverTitle()).toBe("Async");
+    await guide.next();
+    expect(popoverTitle()).toBe("Throws");
+    expect(onError).toHaveBeenCalledWith(expect.objectContaining({ type: "callback", index: 1 }));
   });
 });
 

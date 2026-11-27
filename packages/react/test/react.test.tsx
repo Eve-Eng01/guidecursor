@@ -207,6 +207,37 @@ describe("GuideMenu", () => {
     expect(screen.queryByRole("menu")).toBeNull();
   });
 
+  it("resume controls where a skipped tour picks up", async () => {
+    const skipped = () =>
+      memoryStorage({
+        v: 1,
+        tours: { basics: { status: "skipped", step: 1, updatedAt: 1 } },
+        active: null,
+        muted: false,
+      });
+    const pick = async (resume?: React.ComponentProps<typeof GuideMenu>["resume"]) => {
+      const view = render(
+        <GuideCursorProvider tours={tours} storage={skipped()} motion="reduce">
+          <Page />
+          <GuideMenu label="Help" resume={resume} />
+        </GuideCursorProvider>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /Help/ }));
+      // Saved progress loads asynchronously; the chip shows it once it has
+      await waitFor(() => expect(screen.getAllByRole("menuitem")[0]?.textContent).toContain("2/2"));
+      fireEvent.click(screen.getAllByRole("menuitem")[0]!);
+      await waitFor(() => expect(screen.getByTestId("state").textContent).toMatch(/:showing$/));
+      const state = screen.getByTestId("state").textContent;
+      view.unmount();
+      document.body.innerHTML = "";
+      return state;
+    };
+    expect(await pick()).toBe("basics:1:showing");
+    expect(await pick("in-progress")).toBe("basics:0:showing");
+    expect(await pick(false)).toBe("basics:0:showing");
+    expect(await pick(() => true)).toBe("basics:1:showing");
+  });
+
   it("can be limited to specific tours", () => {
     render(
       <GuideCursorProvider tours={tours} storage={memoryStorage()}>

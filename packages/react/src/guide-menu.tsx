@@ -30,6 +30,21 @@ export interface GuideMenuProps {
   statusText?: (tour: TourSummary) => string;
   /** Called after a tour is started from the menu. */
   onSelect?: (tourId: string) => void;
+  /**
+   * Whether picking a half-finished tour continues where the user left off.
+   * - `true` (default): continue tours that are in progress or were skipped
+   * - `"in-progress"`: continue only tours cut off by a reload or navigation; skipped tours start over
+   * - `false`: always start from the first step
+   * - a function: decide per tour
+   */
+  resume?: boolean | "in-progress" | ((tour: TourSummary) => boolean);
+}
+
+function shouldResume(t: TourSummary, resume: GuideMenuProps["resume"]): boolean {
+  if (typeof resume === "function") return resume(t);
+  if (resume === false) return false;
+  if (resume === "in-progress") return t.status === "in-progress";
+  return t.status === "in-progress" || t.status === "skipped";
 }
 
 function defaultStatusText(t: TourSummary): string {
@@ -69,6 +84,7 @@ export function GuideMenu(props: GuideMenuProps): ReactNode {
     emptyText = "No guides available yet.",
     statusText = defaultStatusText,
     onSelect,
+    resume = true,
   } = props;
   const { tours: all, start } = useGuideCursor();
   const [open, setOpen] = useState(false);
@@ -144,8 +160,7 @@ export function GuideMenu(props: GuideMenuProps): ReactNode {
 
   const choose = (t: TourSummary) => {
     close(false);
-    const resume = t.status === "in-progress" || t.status === "skipped";
-    void start(t.id, { resume });
+    void start(t.id, { resume: shouldResume(t, resume) });
     onSelect?.(t.id);
   };
 
