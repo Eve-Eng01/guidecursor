@@ -80,6 +80,34 @@ export const tours: GuideTour[] = [
     ],
   },
   {
+    id: "whats-new",
+    title: "What's new",
+    description: "A step that only shows when beta features are on.",
+    steps: [
+      {
+        id: "beta-toggle",
+        route: "/",
+        target: "#beta-toggle",
+        title: "Beta features",
+        content: "Turn this on to see beta insights. The next step only appears when it's on.",
+      },
+      {
+        id: "beta-insights",
+        route: "/",
+        // `when` passes over a step that doesn't apply, without counting it as a missing target.
+        when: () => document.querySelector("#beta-insights") !== null,
+        target: "#beta-insights",
+        title: "Beta insights",
+        content: "This step uses `when`, so it only shows while beta features are on.",
+      },
+      {
+        id: "wrap-up",
+        title: "That's what's new",
+        content: "Steps can check the page before they show, so every tour fits the person taking it.",
+      },
+    ],
+  },
+  {
     id: "welcome",
     title: "Welcome",
     description: "Auto-starts only when the URL has ?welcome.",

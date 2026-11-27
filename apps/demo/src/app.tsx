@@ -53,6 +53,7 @@ function Header() {
 
 function Home() {
   const [count, setCount] = useState(0);
+  const [beta, setBeta] = useState(false);
   return (
     <main>
       <div className="row">
@@ -75,6 +76,16 @@ function Home() {
           <span>Next payout</span>
           <b>$4,120</b>
         </article>
+      </section>
+      <section className="panel row">
+        <label id="beta-toggle" className="toggle">
+          <input type="checkbox" checked={beta} onChange={(e) => setBeta(e.target.checked)} /> Beta features
+        </label>
+        {beta ? (
+          <p id="beta-insights" className="beta">
+            Beta insights: 38% of tickets sold in the last 7 days.
+          </p>
+        ) : null}
       </section>
       <section className="panel">
         <h2>Page stays usable</h2>

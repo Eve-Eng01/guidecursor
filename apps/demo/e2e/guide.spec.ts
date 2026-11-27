@@ -234,3 +234,24 @@ test.describe("small screens", () => {
     }
   });
 });
+
+test("a `when` step is passed over until it applies, with no missing-target error", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  await openMenuAndStart(page, "whats-new");
+  await expect(title(page)).toHaveText("Beta features");
+  await popover(page).locator(".gc-next").click();
+  // Beta is off: straight to the wrap-up (step 3 of 3)
+  await expect(title(page)).toHaveText("That's what's new");
+  await expect(popover(page)).toContainText("3 of 3");
+  await popover(page).locator(".gc-next").click();
+  await expect(popover(page)).toHaveCount(0);
+
+  await page.locator("#beta-toggle input").check();
+  await openMenuAndStart(page, "whats-new");
+  await expect(title(page)).toHaveText("Beta features");
+  await popover(page).locator(".gc-next").click();
+  await expect(title(page)).toHaveText("Beta insights");
+  await expect(popover(page)).toContainText("2 of 3");
+  expect(errors).toEqual([]);
+});

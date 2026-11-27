@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>guidecursor · vanilla example</title>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 0; background: #fafafa; color: #18181b; }
+      header { display: flex; align-items: center; gap: 12px; padding: 14px 24px; background: #fff; border-bottom: 1px solid #eee; }
+      header strong { margin-right: auto; }
+      main { max-width: 860px; margin: 32px auto; padding: 0 24px; display: grid; gap: 16px; }
+      .card { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 16px 20px; }
+      .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      button { font: inherit; padding: 8px 14px; border-radius: 10px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
+      button.primary { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Acme Events</strong>
+      <label class="row"><input id="pro" type="checkbox" /> Pro plan</label>
+      <button id="help" class="primary" type="button">Show me around</button>
+    </header>
+    <main>
+      <section class="card" data-tour="search">
+        <label>Search <input type="search" placeholder="Events, people, payouts…" /></label>
+      </section>
+      <section class="card row" data-tour="stats">
+        <div><small>Tickets sold</small><br /><b>1,284</b></div>
+        <div><small>Revenue</small><br /><b>$12,840</b></div>
+      </section>
+      <section class="card" id="pro-insights" hidden data-tour="pro-insights">
+        <b>Pro insights:</b> most tickets sell on Thursdays.
+      </section>
+      <section class="card row">
+        <button type="button" data-tour="create">+ Create event</button>
+        <span id="created"></span>
+      </section>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

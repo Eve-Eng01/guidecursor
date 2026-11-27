@@ -1,11 +1,14 @@
 # guidecursor
 
+![A guide cursor glides across a dashboard, an events page and a settings page, explaining each part in a popover while the page stays usable](docs/media/hero.gif)
+
 **Product walkthroughs that show, not block.** A small animated cursor glides from one part of your UI to the next, the way a colleague would show you around. A popover explains each stop. There's no dimmed full-screen overlay, so the page stays usable the whole time, and users can skip or come back later.
 
 - **Animated guide cursor.** It follows a curved, eased path between targets with requestAnimationFrame. It keeps tracking targets that scroll or reflow mid-flight, and it respects `prefers-reduced-motion`.
 - **Non-blocking by default.** A soft highlight ring replaces the modal overlay. Clicks, typing and scrolling all keep working during a tour.
 - **Skippable and resumable.** Esc or × skips a tour, and progress is saved. "Don't show again" turns off auto-start for every tour. Tours resume where the user left off, even after a full page reload.
 - **Multi-page tours.** A step can declare a `route`. guidecursor calls your router's `navigate` and then waits for the target to appear.
+- **Tours that fit the page.** A step's `when` check passes over steps that don't apply right now (an empty list, a feature that's off), so nothing times out and every tour fits the person taking it.
 - **Opt-in auto-start.** Tours never pop up on their own unless you configure `autoStart`. The optional `<GuideMenu />` is a "Guides" dropdown that users open when they want help.
 - **Accessible.** The popover is a non-modal `role="dialog"` with an `aria-live` announcement. Focus moves into it and is restored at the end. Keyboard: Esc, ←, →, Enter.
 - **Pluggable persistence.** `localStorage` is the default, and every call is wrapped in try/catch. You can swap in your server with two functions.
@@ -13,6 +16,8 @@
 - **Small and framework-agnostic.** `@guidecursor/core` is about 9.7 kB min+gzip including its CSS. It's SSR-safe, ships ESM, CJS and types, and has no dependencies. `@guidecursor/react` adds about 2.1 kB.
 
 MIT licensed.
+
+**Docs:** [Getting started](docs/getting-started.md) · [How a tour runs](docs/concepts.md) · [Guides and recipes](docs/README.md) · [Examples](examples/README.md) · [Troubleshooting](docs/troubleshooting.md) · [Contributing](CONTRIBUTING.md)
 
 ---
 
@@ -100,7 +105,7 @@ function HelpButton() {
 | `placement` | `"auto" \| "top" \| "bottom" \| "left" \| "right"` | `"auto"` | Preferred popover side. It flips and shifts to stay in the viewport. |
 | `offset` | `number` | `14` | Gap between the target and the popover, in px. |
 | `targetTimeout` | `number` | `5000` | How long to wait for a step's target, in ms. |
-| `onMissingTarget` | `"skip" \| "end" \| "center"` | `"skip"` | What to do when a target never appears. |
+| `onMissingTarget` | `"skip" \| "end" \| "center"` | `"skip"` | What to do when a target never appears. A step can override it. `"center"` shows the step anyway, so nothing silently disappears. |
 | `motion` | `"auto" \| "reduce" \| "full"` | `"auto"` | `auto` follows `prefers-reduced-motion`. |
 | `keyboard` | `boolean` | `true` | Esc skips. ←, → and Enter navigate (only when focus isn't in a page input). |
 | `focus` | `boolean` | `true` | Move focus to the popover on each step. |
@@ -146,6 +151,8 @@ function HelpButton() {
   cursor?: boolean;
   advanceOn?: "click" | { event: string; selector?: string }; // advance on a real user action
   timeout?: number;                                    // per-step targetTimeout
+  onMissingTarget?: "skip" | "end" | "center";         // per-step override
+  when?: (ctx) => boolean | Promise<boolean>;          // show only when it applies (see below)
   hideBack?: boolean;
   focus?: boolean;
   beforeShow?: (ctx) => void | Promise<void>;          // open a menu, switch a tab, fetch…
@@ -154,6 +161,10 @@ function HelpButton() {
   data?: Record<string, unknown>;
 }
 ```
+
+`when` runs after `route` navigation and `beforeShow`, so it can look at the page. Returning `false` passes over the step in the direction the user is moving (Next skips forward, Back skips back) and is **not** reported as an error. Use it for steps that only apply sometimes, like a tab only some records have. A missing target, on the other hand, usually means the tour and the page have drifted apart, so it's reported as `target-missing`. See [Interactive and conditional steps](docs/guides/interactive-steps.md).
+
+![A tour passes over its "Beta insights" step while beta features are off, then shows it once they're on](docs/media/conditional-steps.gif)
 
 A string `route` matches when the path is equal, ignoring trailing slashes and the hash. Any query params in the step's route must also be present: `/account?tab=payout` matches `/account?tab=payout&x=1` but not `/account`.
 
@@ -257,6 +268,8 @@ Everything is driven by CSS custom properties. Set them on `:root` or on any anc
 
 You can also style the classes directly: `.gc-cursor`, `.gc-popover`, `.gc-ring`, `.gc-btn`, `.gc-menu-*`.
 
+![The same tour themed dark with a sky-blue accent, using only CSS custom properties](docs/media/theming.gif)
+
 ---
 
 ## React
@@ -299,7 +312,10 @@ A custom "Guides" dropdown that never interrupts. It lists tours with their stat
 | `align` | `"end"` | Which edge of the trigger the panel aligns to. |
 | `showNewIndicator` | `true` | Shows a dot while some tours are still new. |
 | `statusText` | built-in | `(tour) => string` |
+| `resume` | `true` | Where a half-finished tour picks up. `true`: continue tours that are in progress or were skipped. `"in-progress"`: continue only tours cut off by a reload or navigation, and start skipped ones over. `false`: always start from the first step. Or a function `(tour) => boolean`. |
 | `emptyText`, `className`, `onSelect` | | |
+
+![The Guides menu lists tours with their progress; a tour skipped with Esc shows its progress and can be picked up again](docs/media/menu.gif)
 
 ---
 
@@ -380,7 +396,7 @@ The API intentionally feels familiar. Steps have a `target` (driver.js: `element
 
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). `npm install`, `npm run build`, `npm test`, `npm run test:e2e`, `npm run lint`, `npm run typecheck`. The demo runs with `npm run dev -w @guidecursor/demo`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the architecture, the test setup, a worked example of adding a feature, and the release steps. In short: `npm install`, `npm run build`, `npm test`, `npm run test:e2e`, `npm run lint`, `npm run typecheck`. The demo runs with `npm run dev -w @guidecursor/demo`, and `npm run record:gifs` re-records the GIFs in these docs.
 
 ## License
 

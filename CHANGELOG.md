@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-27
+
+### Added
+
+- `@guidecursor/core`
+  - `GuideStep.when(ctx)`: show a step only when it applies. It runs after `route` and `beforeShow`. When it returns `false`, the step is passed over in the direction the user is moving, without a `target-missing` error. If no earlier step applies on Back, the guide turns around.
+  - `GuideStep.onMissingTarget` overrides the guide-wide setting for one step.
+  - `MissingTargetMode` type export.
+- `@guidecursor/react`
+  - `<GuideMenu resume>`: `true` (default, unchanged), `"in-progress"`, `false`, or `(tour) => boolean`. It decides whether picking a half-finished tour continues or starts over.
+- Demo: a "What's new" tour with a conditional step, plus an e2e test for it.
+- Docs: `docs/` guides and recipes, `examples/`, animated GIFs recorded from the demo (`npm run record:gifs`), and a much longer CONTRIBUTING.md.
+
 ## [0.1.0] - 2026-11-25
 
 ### Added
